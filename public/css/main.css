@@ -1,0 +1,20 @@
+html, body {
+  font-family: sans-serif;
+}
+
+table {
+  margin: 40px auto;
+}
+
+td {
+  border: 1px solid gray;
+}
+
+input {
+  font-size: 64px;
+  width: 75px;
+  height: 75px;
+  text-align: center;
+  vertical-align: middle;
+  text-transform: uppercase;
+}
