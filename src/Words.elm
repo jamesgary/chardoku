@@ -1,7 +1,9 @@
 module Words exposing (words)
 
+import Set exposing (Set)
 
-words : List String
+
+words : Set String
 words =
     """aah
 aal
@@ -1067,3 +1069,4 @@ zoo
 zuz
 zzz"""
         |> String.split "\n"
+        |> Set.fromList

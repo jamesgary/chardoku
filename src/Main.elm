@@ -6,8 +6,9 @@ import Dom
 import Html exposing (Html, div, h1, input, li, table, td, text, tr, ul)
 import Html.Attributes exposing (class, id, maxlength, type_, value)
 import Html.Events exposing (onFocus, onInput)
-import Set
+import Set exposing (Set)
 import Task
+import Words exposing (words)
 
 
 main =
@@ -69,6 +70,16 @@ getCellAt row col cells =
         |> Maybe.withDefault (Just '@')
 
 
+getCharAt : Int -> Cells -> Maybe Char
+getCharAt index cells =
+    Array.get index cells
+        |> Maybe.withDefault (Just '%')
+
+
+
+-- should always find the cell
+
+
 validate : Cells -> Status
 validate cells =
     {-
@@ -92,6 +103,16 @@ validate cells =
         hasDuplicateChars =
             uniqueCount < List.length filledOutCells
 
+        checkedWordReasons =
+            [ checkWord 0 Right words cells
+            , checkWord 1 Right words cells
+            , checkWord 2 Right words cells
+            , checkWord 0 Down words cells
+            , checkWord 1 Down words cells
+            , checkWord 2 Down words cells
+            ]
+                |> List.filterMap identity
+
         reasons =
             [ if isIncomplete then
                 [ "Blank cells!" ]
@@ -101,6 +122,7 @@ validate cells =
                 [ "Duplicate characters!" ]
               else
                 []
+            , checkedWordReasons
             ]
                 |> List.concat
     in
@@ -108,6 +130,71 @@ validate cells =
         Valid
     else
         Invalid reasons
+
+
+type Dir
+    = Right
+    | Down
+
+
+checkWord : Int -> Dir -> Set String -> Cells -> Maybe String
+checkWord index dir words cells =
+    let
+        maybeWord =
+            getWord index dir cells
+    in
+    case maybeWord of
+        Just word ->
+            if Set.member word words then
+                Nothing
+            else
+                Just (word ++ " is not a word")
+
+        Nothing ->
+            Nothing
+
+
+getWord : Int -> Dir -> Cells -> Maybe String
+getWord index dir cells =
+    case dir of
+        Right ->
+            let
+                chars =
+                    [ getCharAt (index * 3) cells
+                    , getCharAt (index * 3 + 1) cells
+                    , getCharAt (index * 3 + 2) cells
+                    ]
+            in
+            if List.member Nothing chars then
+                Nothing
+            else
+                chars
+                    |> List.map (Maybe.withDefault '&')
+                    |> listCharsToStr
+                    |> Just
+
+        Down ->
+            let
+                chars =
+                    [ getCharAt index cells
+                    , getCharAt (index + 3) cells
+                    , getCharAt (index + 6) cells
+                    ]
+            in
+            if List.member Nothing chars then
+                Nothing
+            else
+                chars
+                    |> List.map (Maybe.withDefault '&')
+                    |> listCharsToStr
+                    |> Just
+
+
+listCharsToStr : List Char -> String
+listCharsToStr chars =
+    chars
+        |> List.map (\c -> String.cons c "")
+        |> String.concat
 
 
 
