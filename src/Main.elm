@@ -3,9 +3,10 @@ module Main exposing (..)
 import Array exposing (Array)
 import Char
 import Dom
-import Html exposing (Html, h1, input, table, td, text, tr)
-import Html.Attributes exposing (id, maxlength, type_, value)
+import Html exposing (Html, div, h1, input, li, table, td, text, tr, ul)
+import Html.Attributes exposing (class, id, maxlength, type_, value)
 import Html.Events exposing (onFocus, onInput)
+import Set
 import Task
 
 
@@ -25,6 +26,7 @@ main =
 type alias Model =
     { cells : Cells
     , focusIndex : Maybe Int
+    , status : Status
     }
 
 
@@ -36,10 +38,20 @@ type alias Cell =
     Maybe Char
 
 
+type Status
+    = Valid
+    | Invalid (List String)
+
+
 init : ( Model, Cmd Msg )
 init =
-    ( { cells = Array.repeat 9 Nothing
+    let
+        cells =
+            Array.repeat 9 Nothing
+    in
+    ( { cells = cells
       , focusIndex = Nothing
+      , status = validate cells
       }
     , Cmd.none
     )
@@ -55,6 +67,47 @@ getCellAt row col cells =
     cells
         |> Array.get (indexOf row col)
         |> Maybe.withDefault (Just '@')
+
+
+validate : Cells -> Status
+validate cells =
+    {-
+       duplicate characters
+       6 valid words
+    -}
+    let
+        filledOutCells =
+            cells
+                |> Array.toList
+                |> List.filterMap identity
+
+        isIncomplete =
+            List.length filledOutCells < 9
+
+        uniqueCount =
+            filledOutCells
+                |> Set.fromList
+                |> Set.size
+
+        hasDuplicateChars =
+            uniqueCount < List.length filledOutCells
+
+        reasons =
+            [ if isIncomplete then
+                [ "Blank cells!" ]
+              else
+                []
+            , if hasDuplicateChars then
+                [ "Duplicate characters!" ]
+              else
+                []
+            ]
+                |> List.concat
+    in
+    if List.isEmpty reasons then
+        Valid
+    else
+        Invalid reasons
 
 
 
@@ -74,9 +127,14 @@ update msg model =
             { model | focusIndex = Just index } ! []
 
         InputCell index str ->
+            let
+                cells =
+                    setCellAt index str model.cells
+            in
             { model
                 | focusIndex = Just (index + 1)
-                , cells = setCellAt index str model.cells
+                , cells = cells
+                , status = validate cells
             }
                 ! [ Task.attempt NoOp (Dom.focus (index + 1 |> toString)) ]
 
@@ -113,11 +171,29 @@ subscriptions model =
 
 view : Model -> Html Msg
 view model =
-    table []
-        [ viewRow 1 model.cells
-        , viewRow 2 model.cells
-        , viewRow 3 model.cells
+    div []
+        [ table []
+            [ viewRow 1 model.cells
+            , viewRow 2 model.cells
+            , viewRow 3 model.cells
+            ]
+        , viewStatus model.status
         ]
+
+
+viewStatus : Status -> Html Msg
+viewStatus status =
+    case status of
+        Valid ->
+            h1 [ class "validated" ] [ text "You did it!" ]
+
+        Invalid reasons ->
+            ul [] (List.map viewReason reasons)
+
+
+viewReason : String -> Html Msg
+viewReason reason =
+    li [] [ text reason ]
 
 
 viewRow : Int -> Cells -> Html Msg
