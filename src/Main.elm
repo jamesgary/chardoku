@@ -1,7 +1,12 @@
 module Main exposing (..)
 
+import Array exposing (Array)
+import Char
+import Dom
 import Html exposing (Html, h1, input, table, td, text, tr)
-import Html.Attributes exposing (maxlength, type_, value)
+import Html.Attributes exposing (id, maxlength, type_, value)
+import Html.Events exposing (onFocus, onInput)
+import Task
 
 
 main =
@@ -18,20 +23,13 @@ main =
 
 
 type alias Model =
-    { cells : Cells }
+    { cells : Cells
+    , focusIndex : Maybe Int
+    }
 
 
 type alias Cells =
-    { cell1 : Cell
-    , cell2 : Cell
-    , cell3 : Cell
-    , cell4 : Cell
-    , cell5 : Cell
-    , cell6 : Cell
-    , cell7 : Cell
-    , cell8 : Cell
-    , cell9 : Cell
-    }
+    Array Cell
 
 
 type alias Cell =
@@ -40,20 +38,23 @@ type alias Cell =
 
 init : ( Model, Cmd Msg )
 init =
-    ( { cells =
-            { cell1 = Nothing
-            , cell2 = Nothing
-            , cell3 = Nothing
-            , cell4 = Nothing
-            , cell5 = Nothing
-            , cell6 = Nothing
-            , cell7 = Nothing
-            , cell8 = Nothing
-            , cell9 = Nothing
-            }
+    ( { cells = Array.repeat 9 Nothing
+      , focusIndex = Nothing
       }
     , Cmd.none
     )
+
+
+indexOf : Int -> Int -> Int
+indexOf row col =
+    col + (3 * (row - 1)) - 1
+
+
+getCellAt : Int -> Int -> Cells -> Cell
+getCellAt row col cells =
+    cells
+        |> Array.get (indexOf row col)
+        |> Maybe.withDefault (Just '@')
 
 
 
@@ -61,12 +62,40 @@ init =
 
 
 type Msg
-    = NoOp
+    = FocusCell Int
+    | InputCell Int String
+    | NoOp (Result Dom.Error ())
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    model ! []
+    case msg of
+        FocusCell index ->
+            { model | focusIndex = Just index } ! []
+
+        InputCell index str ->
+            { model
+                | focusIndex = Just (index + 1)
+                , cells = setCellAt index str model.cells
+            }
+                ! [ Task.attempt NoOp (Dom.focus (index + 1 |> toString)) ]
+
+        NoOp _ ->
+            model ! []
+
+
+setCellAt : Int -> String -> Cells -> Cells
+setCellAt index str cells =
+    let
+        char =
+            case String.uncons str of
+                Just ( c, _ ) ->
+                    Just c
+
+                Nothing ->
+                    Nothing
+    in
+    Array.set index char cells
 
 
 
@@ -84,19 +113,24 @@ subscriptions model =
 
 view : Model -> Html Msg
 view model =
-    let
-        { cell1, cell2, cell3, cell4, cell5, cell6, cell7, cell8, cell9 } =
-            model.cells
-    in
     table []
-        [ tr [] [ viewCell cell1, viewCell cell2, viewCell cell3 ]
-        , tr [] [ viewCell cell4, viewCell cell5, viewCell cell6 ]
-        , tr [] [ viewCell cell7, viewCell cell8, viewCell cell9 ]
+        [ viewRow 1 model.cells
+        , viewRow 2 model.cells
+        , viewRow 3 model.cells
         ]
 
 
-viewCell : Cell -> Html Msg
-viewCell cell =
+viewRow : Int -> Cells -> Html Msg
+viewRow row cells =
+    tr []
+        [ viewCell (indexOf row 1) (getCellAt row 1 cells)
+        , viewCell (indexOf row 2) (getCellAt row 2 cells)
+        , viewCell (indexOf row 3) (getCellAt row 3 cells)
+        ]
+
+
+viewCell : Int -> Cell -> Html Msg
+viewCell index cell =
     let
         val =
             case cell of
@@ -106,4 +140,14 @@ viewCell cell =
                 Nothing ->
                     ""
     in
-    td [] [ input [ value val, maxlength 1, type_ "text" ] [] ]
+    td []
+        [ input
+            [ value val
+            , maxlength 1
+            , type_ "text"
+            , onFocus (FocusCell index)
+            , onInput (InputCell index)
+            , id (toString index)
+            ]
+            []
+        ]
