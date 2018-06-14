@@ -2,18 +2,12 @@
 
 Can you spell six 3-letter words (three words horizontally, three words vertically) without repeating any letter?
 
-Work in progress. Started as a hack night project at https://www.meetup.com/Elm-OC
+Work in progress. Started as a hack night project at https://www.meetup.com/Elm-OC using https://github.com/jamesgary/elm-seedling
 
 ## To run locally using `elm-live`
 
 ```
 ./bin/run.sh
-```
-
-## To deploy to S3
-
-```
-./bin/deploy.sh
 ```
 
 ## Todo
