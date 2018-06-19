@@ -9,6 +9,11 @@
     <script>
       let node = document.getElementById('main');
       let app = Elm.Main.embed(node);
+      app.ports.select.subscribe(function(id) {
+        setTimeout(function() {
+          document.getElementById(id).select();
+        }, 0);
+      });
     </script>
   </body>
 </html>

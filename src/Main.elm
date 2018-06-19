@@ -1,4 +1,4 @@
-module Main exposing (..)
+port module Main exposing (..)
 
 import Array exposing (Array)
 import Char
@@ -9,6 +9,9 @@ import Set exposing (Set)
 import Task
 import View exposing (view)
 import Words exposing (words)
+
+
+port select : String -> Cmd msg
 
 
 main =
@@ -165,11 +168,24 @@ listCharsToStr chars =
 -- UPDATE
 
 
+nextIndex : Int -> Int
+nextIndex index =
+    if index + 1 > 8 then
+        0
+    else
+        index + 1
+
+
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         FocusCell index ->
-            { model | focusIndex = Just index } ! []
+            if model.focusIndex == Just index then
+                model ! []
+            else
+                { model | focusIndex = Just index }
+                    ! [ select (index |> toString)
+                      ]
 
         InputCell index str ->
             let
@@ -177,11 +193,12 @@ update msg model =
                     setCellAt index str model.cells
             in
             { model
-                | focusIndex = Just (index + 1)
+                | focusIndex = Just (nextIndex index)
                 , cells = cells
                 , status = validate cells
             }
-                ! [ Task.attempt NoOp (Dom.focus (index + 1 |> toString)) ]
+                ! [ select (nextIndex index |> toString)
+                  ]
 
         NoOp _ ->
             model ! []

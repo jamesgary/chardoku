@@ -7,6 +7,7 @@ import Css.Foreign exposing (global, selector)
 import Html.Styled as Html exposing (Attribute, Html, a, div, h1, h2, input, li, p, td, text, tr, ul)
 import Html.Styled.Attributes as Attributes exposing (class, css, href, id, maxlength, target, type_, value)
 import Html.Styled.Events exposing (onFocus, onInput)
+import Json.Decode as Json
 
 
 warmFlame =
