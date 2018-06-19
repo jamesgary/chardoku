@@ -10,13 +10,6 @@ import Html.Styled.Events exposing (..)
 import Json.Decode as Json
 
 
-warmFlame =
-    linearGradient2 (deg 45)
-        (stop2 (hex "ff9a9e") <| pct 0)
-        (stop2 (hex "fad0c4") <| pct 100)
-        []
-
-
 widthThird : Style
 widthThird =
     width (pct 33)
@@ -157,6 +150,7 @@ viewReason reason =
             , color (hex "fff")
             , padding2 (px 8) (px 12)
             , fontSize (px 16)
+            , border3 (px 2) solid (rgb 103 0 2)
             , borderRadius (px 7)
             , margin2 (px 11) zero
             , marginRight (px 31)
