@@ -87,7 +87,7 @@ viewCell index cell =
                     ""
     in
     td
-        [ css [ border3 (px 1) solid Css.Colors.gray ]
+        [--css [ border3 (px 1) solid Css.Colors.gray ]
         ]
         [ input
             [ value val
@@ -104,7 +104,8 @@ viewCell index cell =
                 , verticalAlign middle
                 , textTransform uppercase
                 , borderRadius (px 20)
-                , border3 (px 1) solid (hex "777")
+                , border3 (px 4) solid (rgba 33 30 51 0.84)
+                , margin (px 4)
                 ]
             ]
             []
