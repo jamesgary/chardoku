@@ -120,7 +120,21 @@ viewStatus : Status -> Html Msg
 viewStatus status =
     case status of
         Valid ->
-            div [ css [] ]
+            div
+                [ css
+                    [ fontSize (px 42)
+                    , fontWeight (int 500)
+                    , backgroundColor (hex "00b500")
+                    , padding (px 20)
+                    , display inlineBlock
+                    , color (hex "#fff")
+                    , borderRadius (px 14)
+                    , letterSpacing (px 1)
+                    , textShadow4 (px 2) (px 2) zero (rgba 0 0 0 0.5)
+                    , border3 (px 2) solid (rgba 0 0 0 0.5)
+                    ]
+                , class "tada"
+                ]
                 [ text "You did it!" ]
 
         Invalid reasons ->

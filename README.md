@@ -14,8 +14,6 @@ Chardoku aims to be accessible, and allows input via typing characters, using ar
 
 ## Todo
 
-- Don't skip to next cell when deleting
-  - Maybe forego text fields entirely, and keep all the state in Elm?
 - Highlight misspelled words
 - Highlight duplicate letters
 - Remove words with duplicate letters from master word list
