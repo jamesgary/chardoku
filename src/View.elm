@@ -5,7 +5,7 @@ import Css exposing (..)
 import Css.Colors
 import Css.Foreign exposing (global, selector)
 import Html.Styled as Html exposing (Attribute, Html, a, div, h1, h2, input, li, p, td, text, tr, ul)
-import Html.Styled.Attributes exposing (class, css, href, id, maxlength, type_, value)
+import Html.Styled.Attributes as Attributes exposing (class, css, href, id, maxlength, target, type_, value)
 import Html.Styled.Events exposing (onFocus, onInput)
 
 
@@ -73,6 +73,7 @@ view model =
                 ]
                 [ a
                     [ href "https://github.com/jamesgary/chardoku"
+                    , Attributes.target "_blank"
                     ]
                     [ text "source code" ]
                 ]
