@@ -2,12 +2,12 @@ module Main exposing (..)
 
 import Array exposing (Array)
 import Char
+import Common exposing (..)
 import Dom
-import Html exposing (Html, div, h1, input, li, table, td, text, tr, ul)
-import Html.Attributes exposing (class, id, maxlength, type_, value)
-import Html.Events exposing (onFocus, onInput)
+import Html
 import Set exposing (Set)
 import Task
+import View exposing (view)
 import Words exposing (words)
 
 
@@ -18,30 +18,6 @@ main =
         , update = update
         , subscriptions = subscriptions
         }
-
-
-
--- MODEL
-
-
-type alias Model =
-    { cells : Cells
-    , focusIndex : Maybe Int
-    , status : Status
-    }
-
-
-type alias Cells =
-    Array Cell
-
-
-type alias Cell =
-    Maybe Char
-
-
-type Status
-    = Valid
-    | Invalid (List String)
 
 
 init : ( Model, Cmd Msg )
@@ -56,18 +32,6 @@ init =
       }
     , Cmd.none
     )
-
-
-indexOf : Int -> Int -> Int
-indexOf row col =
-    col + (3 * (row - 1)) - 1
-
-
-getCellAt : Int -> Int -> Cells -> Cell
-getCellAt row col cells =
-    cells
-        |> Array.get (indexOf row col)
-        |> Maybe.withDefault (Just '@')
 
 
 getCharAt : Int -> Cells -> Maybe Char
@@ -201,12 +165,6 @@ listCharsToStr chars =
 -- UPDATE
 
 
-type Msg
-    = FocusCell Int
-    | InputCell Int String
-    | NoOp (Result Dom.Error ())
-
-
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
@@ -250,67 +208,3 @@ setCellAt index str cells =
 subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.none
-
-
-
--- VIEW
-
-
-view : Model -> Html Msg
-view model =
-    div []
-        [ table []
-            [ viewRow 1 model.cells
-            , viewRow 2 model.cells
-            , viewRow 3 model.cells
-            ]
-        , viewStatus model.status
-        ]
-
-
-viewStatus : Status -> Html Msg
-viewStatus status =
-    case status of
-        Valid ->
-            h1 [ class "validated" ] [ text "You did it!" ]
-
-        Invalid reasons ->
-            ul [] (List.map viewReason reasons)
-
-
-viewReason : String -> Html Msg
-viewReason reason =
-    li [] [ text reason ]
-
-
-viewRow : Int -> Cells -> Html Msg
-viewRow row cells =
-    tr []
-        [ viewCell (indexOf row 1) (getCellAt row 1 cells)
-        , viewCell (indexOf row 2) (getCellAt row 2 cells)
-        , viewCell (indexOf row 3) (getCellAt row 3 cells)
-        ]
-
-
-viewCell : Int -> Cell -> Html Msg
-viewCell index cell =
-    let
-        val =
-            case cell of
-                Just char ->
-                    String.fromChar char
-
-                Nothing ->
-                    ""
-    in
-    td []
-        [ input
-            [ value val
-            , maxlength 1
-            , type_ "text"
-            , onFocus (FocusCell index)
-            , onInput (InputCell index)
-            , id (toString index)
-            ]
-            []
-        ]
