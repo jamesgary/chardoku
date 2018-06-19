@@ -107,6 +107,7 @@ Can you spell six 3-letter words (three words horizontally, three words vertical
             -- reasons
             [ css
                 [ widthThird
+                , marginTop (px 100)
                 ]
             ]
             [ viewStatus model.status ]
@@ -117,15 +118,35 @@ viewStatus : Status -> Html Msg
 viewStatus status =
     case status of
         Valid ->
-            h1 [ class "validated" ] [ text "You did it!" ]
+            div [ css [] ]
+                [ text "You did it!" ]
 
         Invalid reasons ->
-            ul [] (List.map viewReason reasons)
+            ul
+                [ css
+                    [ listStyle none
+                    , paddingTop (px 60)
+                    , margin zero
+                    , padding zero
+                    ]
+                ]
+                (List.map viewReason reasons)
 
 
 viewReason : String -> Html Msg
 viewReason reason =
-    li [] [ text reason ]
+    li
+        [ css
+            [ backgroundColor (rgba 183 50 42 0.9)
+            , color (hex "fff")
+            , padding2 (px 8) (px 12)
+            , fontSize (px 16)
+            , borderRadius (px 7)
+            , margin2 (px 11) zero
+            , marginRight (px 31)
+            ]
+        ]
+        [ text reason ]
 
 
 viewRow : Int -> Cells -> Html Msg
