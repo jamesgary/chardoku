@@ -4,6 +4,8 @@ Can you spell six 3-letter words (three words horizontally, three words vertical
 
 Work in progress. Started as a hack night project at https://www.meetup.com/Elm-OC using https://github.com/jamesgary/elm-seedling
 
+Chardoku aims to be accessible, and allows input via typing characters, using arrow keys or tabbing, and mouse clicks.
+
 ## To run locally using `elm-live`
 
 ```

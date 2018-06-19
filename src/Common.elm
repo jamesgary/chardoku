@@ -26,8 +26,8 @@ type Status
 
 type Msg
     = FocusCell Int
-    | InputCell Int String
-    | NoOp (Result Dom.Error ())
+    | ClickCell Int
+    | InputCell Int Int
 
 
 getCellAt : Int -> Int -> Cells -> Cell

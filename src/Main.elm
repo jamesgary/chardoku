@@ -33,7 +33,7 @@ init =
       , focusIndex = Nothing
       , status = validate cells
       }
-    , Cmd.none
+    , select "0"
     )
 
 
@@ -180,42 +180,84 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         FocusCell index ->
-            if model.focusIndex == Just index then
-                model ! []
+            { model | focusIndex = Just index } ! []
+
+        ClickCell index ->
+            { model | focusIndex = Just index }
+                ! [ select (index |> toString) ]
+
+        InputCell index keycode ->
+            case keycodeToAction keycode index of
+                MoveToIndex index ->
+                    { model | focusIndex = Just index }
+                        ! [ select (index |> toString) ]
+
+                NewChar char ->
+                    let
+                        cells =
+                            setCellAt index char model.cells
+                    in
+                    { model
+                        | focusIndex = Just (nextIndex index)
+                        , cells = cells
+                        , status = validate cells
+                    }
+                        ! [ select (nextIndex index |> toString) ]
+
+                NoOp ->
+                    model ! []
+
+
+type KeycodeAction
+    = MoveToIndex Int
+    | NewChar Char
+    | NoOp
+
+
+keycodeToAction : Int -> Int -> KeycodeAction
+keycodeToAction keycode index =
+    case keycode of
+        38 ->
+            -- up
+            if (index - 3) < 0 then
+                MoveToIndex <| index
             else
-                { model | focusIndex = Just index }
-                    ! [ select (index |> toString)
-                      ]
+                MoveToIndex <| index - 3
 
-        InputCell index str ->
-            let
-                cells =
-                    setCellAt index str model.cells
-            in
-            { model
-                | focusIndex = Just (nextIndex index)
-                , cells = cells
-                , status = validate cells
-            }
-                ! [ select (nextIndex index |> toString)
-                  ]
+        40 ->
+            -- down
+            if (index + 3) > 8 then
+                MoveToIndex <| index
+            else
+                MoveToIndex <| index + 3
 
-        NoOp _ ->
-            model ! []
+        37 ->
+            -- left
+            if List.member index [ 0, 3, 6 ] then
+                MoveToIndex <| index
+            else
+                MoveToIndex <| index - 1
+
+        39 ->
+            -- right
+            if List.member index [ 2, 5, 8 ] then
+                MoveToIndex <| index
+            else
+                MoveToIndex <| index + 1
+
+        nonarrow ->
+            if nonarrow >= 65 && nonarrow <= 90 then
+                nonarrow
+                    |> Char.fromCode
+                    |> Char.toLower
+                    |> NewChar
+            else
+                NoOp
 
 
-setCellAt : Int -> String -> Cells -> Cells
-setCellAt index str cells =
-    let
-        char =
-            case String.uncons str of
-                Just ( c, _ ) ->
-                    Just c
-
-                Nothing ->
-                    Nothing
-    in
-    Array.set index char cells
+setCellAt : Int -> Char -> Cells -> Cells
+setCellAt index char cells =
+    Array.set index (Just char) cells
 
 
 

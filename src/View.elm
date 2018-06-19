@@ -6,7 +6,7 @@ import Css.Colors
 import Css.Foreign exposing (global, selector)
 import Html.Styled as Html exposing (Attribute, Html, a, div, h1, h2, input, li, p, td, text, tr, ul)
 import Html.Styled.Attributes as Attributes exposing (class, css, href, id, maxlength, target, type_, value)
-import Html.Styled.Events exposing (onFocus, onInput)
+import Html.Styled.Events exposing (..)
 import Json.Decode as Json
 
 
@@ -178,8 +178,10 @@ viewCell index cell =
             [ value val
             , maxlength 1
             , type_ "text"
+            , onClick (ClickCell index)
             , onFocus (FocusCell index)
-            , onInput (InputCell index)
+            , on "keydown"
+                (Json.map (InputCell index) keyCode)
             , id (toString index)
             , css
                 [ fontSize (px 64)
