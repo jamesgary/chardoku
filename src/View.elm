@@ -4,8 +4,8 @@ import Common exposing (..)
 import Css exposing (..)
 import Css.Colors
 import Css.Foreign exposing (global, selector)
-import Html.Styled as Html exposing (Attribute, Html, div, h1, input, li, td, text, tr, ul)
-import Html.Styled.Attributes exposing (class, css, id, maxlength, type_, value)
+import Html.Styled as Html exposing (Attribute, Html, a, div, h1, h2, input, li, p, td, text, tr, ul)
+import Html.Styled.Attributes exposing (class, css, href, id, maxlength, type_, value)
 import Html.Styled.Events exposing (onFocus, onInput)
 
 
@@ -41,13 +41,17 @@ view model =
                     )
                 , width (pct 100)
                 , height (pct 100)
+                , margin zero
+                , padding zero
                 ]
             ]
         , Html.div
+            -- left title
             [ css
                 [ color (hex "221563")
                 , textAlign center
                 , paddingTop (px 40)
+                , margin2 (px 10) (px 30)
                 , widthThird
                 ]
             ]
@@ -55,12 +59,36 @@ view model =
                 [ css
                     [ fontSize (px 64)
                     , textShadow3 (px 1) (px 2) (rgba 255 255 255 0.5)
+                    , lineHeight zero
                     , fontWeight (int 100)
                     ]
                 ]
                 [ text "Chardoku" ]
+            , h2
+                [ css
+                    [ fontSize (px 32)
+                    , textShadow3 (px 1) (px 2) (rgba 255 255 255 0.5)
+                    , fontWeight (int 100)
+                    ]
+                ]
+                [ a
+                    [ href "https://github.com/jamesgary/chardoku"
+                    ]
+                    [ text "source code" ]
+                ]
+            , p
+                [ css
+                    [ fontSize (px 24)
+                    ]
+                ]
+                [ text
+                    """
+Can you spell six 3-letter words (three words horizontally, three words vertically) without repeating any letter?
+                """
+                ]
             ]
         , Html.div
+            -- game table
             [ css
                 [ margin2 (px 40) zero
                 , widthThird
@@ -76,6 +104,7 @@ view model =
                 ]
             ]
         , div
+            -- reasons
             [ css
                 [ widthThird
                 ]
