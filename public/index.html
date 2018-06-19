@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Elm Seedling</title>
-    <link rel="stylesheet" type="text/css" href="./css/main.css">
+    <title>Chardoku</title>
   </head>
   <body>
     <script src="./js/main.js" charset="utf-8"></script>
+    <div id="main"></div>
     <script>
-      Elm.Main.fullscreen();
+      let node = document.getElementById('main');
+      let app = Elm.Main.embed(node);
     </script>
   </body>
 </html>

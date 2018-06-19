@@ -5,6 +5,7 @@ module View exposing (view)
 import Common exposing (..)
 import Css exposing (..)
 import Css.Colors
+import Css.Foreign exposing (global, selector)
 import Html.Styled as Html exposing (Html, div, h1, input, li, td, text, tr, ul)
 import Html.Styled.Attributes exposing (class, css, id, maxlength, type_, value)
 import Html.Styled.Events exposing (onFocus, onInput)
@@ -12,8 +13,25 @@ import Html.Styled.Events exposing (onFocus, onInput)
 
 view : Model -> Html Msg
 view model =
-    div []
-        [ Html.table
+    div
+        [ css
+            [ padding (px 20)
+            ]
+        ]
+        [ global
+            [ selector "html, body"
+                [ fontFamily sansSerif
+                , backgroundImage
+                    (linearGradient2 (deg 45)
+                        (stop2 (hex "ff9a9e") <| pct 0)
+                        (stop2 (hex "fad0c4") <| pct 100)
+                        []
+                    )
+                , width (pct 100)
+                , height (pct 100)
+                ]
+            ]
+        , Html.table
             [ css
                 [ margin2 (px 40) auto
                 ]
