@@ -4,7 +4,7 @@ import Array exposing (Array)
 import Char
 import Common exposing (..)
 import Dom
-import Html
+import Html.Styled as Html
 import Set exposing (Set)
 import Task
 import View exposing (view)
