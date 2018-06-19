@@ -204,6 +204,17 @@ update msg model =
                     }
                         ! [ select (nextIndex index |> toString) ]
 
+                Delete ->
+                    let
+                        cells =
+                            clearCellAt index model.cells
+                    in
+                    { model
+                        | cells = cells
+                        , status = validate cells
+                    }
+                        ! []
+
                 NoOp ->
                     model ! []
 
@@ -211,11 +222,16 @@ update msg model =
 type KeycodeAction
     = MoveToIndex Int
     | NewChar Char
+    | Delete
     | NoOp
 
 
 keycodeToAction : Int -> Int -> KeycodeAction
 keycodeToAction keycode index =
+    let
+        _ =
+            Debug.log "kc" keycode
+    in
     case keycode of
         38 ->
             -- up
@@ -245,6 +261,22 @@ keycodeToAction keycode index =
             else
                 MoveToIndex <| index + 1
 
+        8 ->
+            -- backspace
+            Delete
+
+        46 ->
+            -- delete
+            Delete
+
+        32 ->
+            -- spacebar
+            Delete
+
+        9 ->
+            -- tab
+            NoOp
+
         nonarrow ->
             if nonarrow >= 65 && nonarrow <= 90 then
                 nonarrow
@@ -252,12 +284,17 @@ keycodeToAction keycode index =
                     |> Char.toLower
                     |> NewChar
             else
-                NoOp
+                MoveToIndex index
 
 
 setCellAt : Int -> Char -> Cells -> Cells
 setCellAt index char cells =
     Array.set index (Just char) cells
+
+
+clearCellAt : Int -> Cells -> Cells
+clearCellAt index cells =
+    Array.set index Nothing cells
 
 
 
