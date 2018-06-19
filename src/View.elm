@@ -11,6 +11,13 @@ import Html.Styled.Attributes exposing (class, css, id, maxlength, type_, value)
 import Html.Styled.Events exposing (onFocus, onInput)
 
 
+warmFlame =
+    linearGradient2 (deg 45)
+        (stop2 (hex "ff9a9e") <| pct 0)
+        (stop2 (hex "fad0c4") <| pct 100)
+        []
+
+
 view : Model -> Html Msg
 view model =
     div
@@ -22,9 +29,9 @@ view model =
             [ selector "html, body"
                 [ fontFamily sansSerif
                 , backgroundImage
-                    (linearGradient2 (deg 45)
-                        (stop2 (hex "ff9a9e") <| pct 0)
-                        (stop2 (hex "fad0c4") <| pct 100)
+                    (linearGradient2 (deg 155)
+                        (stop2 (hex "cfc9df") <| pct 0)
+                        (stop2 (hex "e2ebf0") <| pct 100)
                         []
                     )
                 , width (pct 100)
@@ -96,6 +103,8 @@ viewCell index cell =
                 , textAlign center
                 , verticalAlign middle
                 , textTransform uppercase
+                , borderRadius (px 20)
+                , border3 (px 1) solid (hex "777")
                 ]
             ]
             []
