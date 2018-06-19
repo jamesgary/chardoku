@@ -107,7 +107,7 @@ Can you spell six 3-letter words (three words horizontally, three words vertical
             -- reasons
             [ css
                 [ widthThird
-                , marginTop (px 100)
+                , marginTop (px 66)
                 ]
             ]
             [ viewStatus model.status ]

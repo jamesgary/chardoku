@@ -112,7 +112,7 @@ checkWord index dir words cells =
             if Set.member word words then
                 Nothing
             else
-                Just (word ++ " is not a word")
+                Just (String.toUpper word ++ " is not a word!")
 
         Nothing ->
             Nothing
