@@ -26,11 +26,11 @@ view model =
         ]
         [ global
             [ selector "html, body"
-                [ fontFamily sansSerif
+                [ fontFamilies [ "Vollkorn", "serif" ]
                 , backgroundImage
-                    (linearGradient2 (deg 155)
-                        (stop2 (hex "cfc9df") <| pct 0)
-                        (stop2 (hex "e2ebf0") <| pct 100)
+                    (linearGradient2 (deg 180)
+                        (stop2 (hex "fad0c4") <| pct 0)
+                        (stop2 (hex "ffd1ff") <| pct 100)
                         []
                     )
                 , width (pct 100)
@@ -42,38 +42,60 @@ view model =
         , Html.div
             -- left title
             [ css
-                [ color (hex "221563")
+                [ color (hex "170d4c")
                 , textAlign center
                 , paddingTop (px 40)
                 , margin2 (px 10) (px 30)
                 , widthThird
                 ]
             ]
-            [ h1
+            [ -- "Chardoku"
+              h1
                 [ css
                     [ fontSize (px 64)
-                    , textShadow3 (px 1) (px 2) (rgba 255 255 255 0.5)
+                    , textShadow3 (px 1) (px 2) (rgba 80 35 255 0.5)
                     , lineHeight zero
                     , fontWeight (int 100)
                     ]
                 ]
                 [ text "Chardoku" ]
+
+            -- "source code"
             , h2
                 [ css
-                    [ fontSize (px 32)
-                    , textShadow3 (px 1) (px 2) (rgba 255 255 255 0.5)
+                    [ fontSize (px 18)
+                    , textShadow3 (px 1) (px 1) (rgba 80 35 255 0.2)
                     , fontWeight (int 100)
+                    , fontFamily monospace
                     ]
                 ]
                 [ a
                     [ href "https://github.com/jamesgary/chardoku"
                     , Attributes.target "_blank"
+                    , css
+                        [ textDecoration none
+                        , color (hex "170d4c")
+                        , lineHeight (pct 100)
+                        , display inlineBlock
+                        , borderBottom3 (px 1) solid (hex "170d4c")
+                        , boxShadow4 zero (px 1) zero (rgba 193 136 185 0.7)
+                        , hover
+                            [ -- textDecoration underline -- regular underline too thicc
+                              color (hex "a63ce4")
+                            , borderBottom3 (px 1) solid (rgba 166 60 228 0.7)
+                            , boxShadow4 zero (px 1) zero (rgba 193 136 185 0.7)
+                            ]
+                        ]
                     ]
                     [ text "source code" ]
                 ]
+
+            -- "Can you spell..."
             , p
                 [ css
                     [ fontSize (px 24)
+                    , color (hex "352a71")
+                    , textShadow3 (px 1) (px 1) (rgba 80 35 255 0.1)
                     ]
                 ]
                 [ text
