@@ -22,6 +22,7 @@ view model =
             [ padding (px 20)
             , displayFlex
             , justifyContent center
+            , fontWeight (int 400)
             ]
         ]
         [ global
@@ -55,45 +56,39 @@ view model =
                     [ fontSize (px 64)
                     , textShadow3 (px 1) (px 2) (rgba 80 35 255 0.5)
                     , lineHeight zero
-                    , fontWeight (int 100)
+                    , fontWeight (int 600)
                     ]
                 ]
                 [ text "Chardoku" ]
 
             -- "source code"
-            , h2
-                [ css
+            , a
+                [ href "https://github.com/jamesgary/chardoku"
+                , Attributes.target "_blank"
+                , css
                     [ fontSize (px 18)
                     , textShadow3 (px 1) (px 1) (rgba 80 35 255 0.2)
-                    , fontWeight (int 100)
                     , fontFamily monospace
-                    ]
-                ]
-                [ a
-                    [ href "https://github.com/jamesgary/chardoku"
-                    , Attributes.target "_blank"
-                    , css
-                        [ textDecoration none
-                        , color (hex "170d4c")
-                        , lineHeight (pct 100)
-                        , display inlineBlock
-                        , borderBottom3 (px 1) solid (hex "170d4c")
+                    , textDecoration none
+                    , color (hex "170d4c")
+                    , lineHeight (pct 100)
+                    , display inlineBlock
+                    , borderBottom3 (px 1) solid (hex "170d4c")
+                    , boxShadow4 zero (px 1) zero (rgba 193 136 185 0.7)
+                    , hover
+                        [ -- textDecoration underline -- regular underline too thicc
+                          color (hex "a63ce4")
+                        , borderBottom3 (px 1) solid (rgba 166 60 228 0.7)
                         , boxShadow4 zero (px 1) zero (rgba 193 136 185 0.7)
-                        , hover
-                            [ -- textDecoration underline -- regular underline too thicc
-                              color (hex "a63ce4")
-                            , borderBottom3 (px 1) solid (rgba 166 60 228 0.7)
-                            , boxShadow4 zero (px 1) zero (rgba 193 136 185 0.7)
-                            ]
                         ]
                     ]
-                    [ text "source code" ]
                 ]
+                [ text "source code" ]
 
             -- "Can you spell..."
             , p
                 [ css
-                    [ fontSize (px 24)
+                    [ fontSize (px 28)
                     , color (hex "352a71")
                     , textShadow3 (px 1) (px 1) (rgba 80 35 255 0.1)
                     ]
@@ -124,7 +119,7 @@ Can you spell six 3-letter words (three words horizontally, three words vertical
             -- reasons
             [ css
                 [ widthThird
-                , marginTop (px 66)
+                , marginTop (px 40)
                 ]
             ]
             [ viewStatus model.status ]
@@ -138,7 +133,6 @@ viewStatus status =
             div
                 [ css
                     [ fontSize (px 42)
-                    , fontWeight (int 500)
                     , backgroundColor (hex "00b500")
                     , padding (px 20)
                     , display inlineBlock
@@ -156,7 +150,6 @@ viewStatus status =
             ul
                 [ css
                     [ listStyle none
-                    , paddingTop (px 60)
                     , margin zero
                     , padding zero
                     ]
@@ -170,12 +163,14 @@ viewReason reason =
         [ css
             [ backgroundColor (rgba 183 50 42 0.9)
             , color (hex "fff")
-            , padding2 (px 8) (px 12)
-            , fontSize (px 16)
+            , textShadow4 zero zero (px 4) (rgba 0 0 0 0.87)
+            , padding3 (px 8) (px 15) (px 3)
+            , fontSize (px 24)
             , border3 (px 2) solid (rgb 103 0 2)
             , borderRadius (px 7)
             , margin2 (px 11) zero
             , marginRight (px 31)
+            , letterSpacing (px 1)
             ]
         ]
         [ text reason ]
