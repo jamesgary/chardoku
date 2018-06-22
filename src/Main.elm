@@ -215,15 +215,27 @@ update msg model =
                     }
                         ! []
 
+                DeleteAndMoveOn ->
+                    let
+                        cells =
+                            clearCellAt index model.cells
+                    in
+                    { model
+                        | cells = cells
+                        , status = validate cells
+                    }
+                        ! [ select (nextIndex index |> toString) ]
+
                 NoOp ->
                     model ! []
 
 
 type KeycodeAction
-    = MoveToIndex Int
-    | NewChar Char
-    | Delete
-    | NoOp
+    = MoveToIndex Int --arrow keys (directional) and invalid letters (current)
+    | NewChar Char -- valid letter
+    | Delete -- delete/backspace
+    | DeleteAndMoveOn -- spacebar
+    | NoOp -- tab
 
 
 keycodeToAction : Int -> Int -> KeycodeAction
@@ -271,7 +283,7 @@ keycodeToAction keycode index =
 
         32 ->
             -- spacebar
-            Delete
+            DeleteAndMoveOn
 
         9 ->
             -- tab
