@@ -5,7 +5,7 @@ import Css exposing (..)
 import Css.Colors
 import Css.Foreign exposing (global, selector)
 import Html.Styled as Html exposing (Attribute, Html, a, div, h1, h2, input, li, p, td, text, tr, ul)
-import Html.Styled.Attributes as Attributes exposing (class, css, href, id, maxlength, target, type_, value)
+import Html.Styled.Attributes as Attributes exposing (class, css, href, id, maxlength, readonly, target, type_, value)
 import Html.Styled.Events exposing (..)
 import Json.Decode as Json
 
@@ -177,7 +177,7 @@ viewCell index cell =
                     String.fromChar char
 
                 Nothing ->
-                    ""
+                    "    "
     in
     td
         [--css [ border3 (px 1) solid Css.Colors.gray ]
@@ -188,6 +188,7 @@ viewCell index cell =
             , type_ "text"
             , onClick (ClickCell index)
             , onFocus (FocusCell index)
+            , readonly True -- TODO IS THIS ACCESSIBLE??
             , on "keydown"
                 (Json.map (InputCell index) keyCode)
             , id (toString index)
