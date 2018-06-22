@@ -217,9 +217,18 @@ viewCell index cell =
                 , verticalAlign middle
                 , textTransform uppercase
                 , borderRadius (px 20)
-                , border3 (px 4) solid (rgba 33 30 51 0.84)
+                , border3 (px 4) solid (rgba 35 24 58 0.99)
                 , margin (px 4)
                 , fontWeight (int 600)
+                , backgroundImage
+                    (linearGradient2 (deg 180)
+                        (stop2 (hex "fefbff") <| pct 20)
+                        (stop2 (hex "fce5ff") <| pct 100)
+                        []
+                    )
+                , selection
+                    [ backgroundColor (hex "c0eaff")
+                    ]
                 ]
             ]
             []
