@@ -213,7 +213,7 @@ update msg model =
                         | cells = cells
                         , status = validate cells
                     }
-                        ! []
+                        ! [ select (index |> toString) ]
 
                 DeleteAndMoveOn ->
                     let

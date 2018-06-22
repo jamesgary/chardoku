@@ -76,8 +76,10 @@
       let node = document.getElementById('main');
       let app = Elm.Main.embed(node);
       app.ports.select.subscribe(function(id) {
-        console.log("Selecting", id)
-        document.getElementById(id).select();
+        setTimeout(function() {
+          console.log("Selecting", id)
+          document.getElementById(id).select();
+        }, 1);
       });
     </script>
   </body>
