@@ -110,9 +110,9 @@ Can you spell six 3-letter words (three words horizontally, three words vertical
                 [ css
                     [ margin auto ]
                 ]
-                [ viewRow 1 model.cells
-                , viewRow 2 model.cells
-                , viewRow 3 model.cells
+                [ viewRow 1 model.focusIndex model.cells
+                , viewRow 2 model.focusIndex model.cells
+                , viewRow 3 model.focusIndex model.cells
                 ]
             ]
         , div
@@ -176,17 +176,17 @@ viewReason reason =
         [ text reason ]
 
 
-viewRow : Int -> Cells -> Html Msg
-viewRow row cells =
+viewRow : Int -> Maybe Int -> Cells -> Html Msg
+viewRow row focusIndex cells =
     tr []
-        [ viewCell (indexOf row 1) (getCellAt row 1 cells)
-        , viewCell (indexOf row 2) (getCellAt row 2 cells)
-        , viewCell (indexOf row 3) (getCellAt row 3 cells)
+        [ viewCell focusIndex (indexOf row 1) (getCellAt row 1 cells)
+        , viewCell focusIndex (indexOf row 2) (getCellAt row 2 cells)
+        , viewCell focusIndex (indexOf row 3) (getCellAt row 3 cells)
         ]
 
 
-viewCell : Int -> Cell -> Html Msg
-viewCell index cell =
+viewCell : Maybe Int -> Int -> Cell -> Html Msg
+viewCell focusIndex index cell =
     let
         val =
             case cell of
@@ -195,6 +195,9 @@ viewCell index cell =
 
                 Nothing ->
                     "    "
+
+        isSelected =
+            focusIndex == Just index
     in
     td
         [--css [ border3 (px 1) solid Css.Colors.gray ]
@@ -209,27 +212,49 @@ viewCell index cell =
             , on "keydown"
                 (Json.map (InputCell index) keyCode)
             , id (toString index)
+            , class
+                (if isSelected then
+                    "selected"
+                 else
+                    ""
+                )
             , css
-                [ fontSize (px 64)
-                , width (px 77)
-                , height (px 80)
-                , textAlign center
-                , verticalAlign middle
-                , textTransform uppercase
-                , borderRadius (px 20)
-                , border3 (px 4) solid (rgba 35 24 58 0.99)
-                , margin (px 4)
-                , fontWeight (int 600)
-                , backgroundImage
-                    (linearGradient2 (deg 180)
-                        (stop2 (hex "fefbff") <| pct 20)
-                        (stop2 (hex "fce5ff") <| pct 100)
-                        []
-                    )
-                , selection
-                    [ backgroundColor (hex "c0eaff")
+                (List.concat
+                    [ [ fontSize (px 64)
+                      , textAlign center
+                      , verticalAlign middle
+                      , textTransform uppercase
+                      , borderRadius (px 20)
+                      , margin (px 4)
+                      , fontWeight (int 600)
+                      , boxSizing borderBox
+                      , backgroundImage
+                            (linearGradient2 (deg 180)
+                                (stop2 (hex "fefbff") <| pct 20)
+                                (stop2 (hex "fce5ff") <| pct 100)
+                                []
+                            )
+
+                      --, selection
+                      --      [ backgroundColor (hex "c0eaff")
+                      --      ]
+                      -- no focus
+                      , border3 (px 3) solid (rgba 35 24 58 0.99)
+                      , width (px 85)
+                      , height (px 88)
+                      , margin (px 1)
+
+                      -- focus
+                      , focus
+                            [ border3 (px 5) solid (rgba 71 102 193 0.99)
+                            , width (px 87)
+                            , height (px 90)
+                            , margin zero
+                            ]
+                      ]
                     ]
-                ]
+                 --|> List.reverse
+                )
             ]
             []
         ]

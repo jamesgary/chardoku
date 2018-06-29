@@ -30,7 +30,7 @@ init =
             Array.repeat 9 Nothing
     in
     ( { cells = cells
-      , focusIndex = Nothing
+      , focusIndex = Just 0
       , status = validate cells
       }
     , select "0"
