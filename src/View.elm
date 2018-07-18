@@ -105,8 +105,11 @@ Can you spell six 3-letter words (three words horizontally, three words vertical
                     , textShadow3 (px 1) (px 1) (rgba 80 35 255 0.1)
                     ]
                 ]
-                [ text
-                    "Fun fact: There are 85,068 solutions."
+                [ text "Fun fact: There are 85,068 solutions using the "
+                , a [ href "http://scrabble.merriam.com/3-letter-words", Attributes.target "_blank" ]
+                    [ text "Official Scrabble™ Players Dictionary"
+                    ]
+                , text "."
                 ]
             ]
         , Html.div
@@ -218,7 +221,6 @@ viewCell focusIndex index cell =
             , type_ "text"
             , onClick (ClickCell index)
             , onFocus (FocusCell index)
-            , readonly True -- TODO IS THIS ACCESSIBLE??
             , on "keydown"
                 (Json.map (InputCell index) keyCode)
             , id (toString index)
@@ -244,11 +246,6 @@ viewCell focusIndex index cell =
                                 (stop2 (hex "fce5ff") <| pct 100)
                                 []
                             )
-
-                      --, selection
-                      --      [ backgroundColor (hex "c0eaff")
-                      --      ]
-                      -- no focus
                       , border3 (px 3) solid (rgba 35 24 58 0.99)
                       , width (px 85)
                       , height (px 88)
@@ -261,6 +258,7 @@ viewCell focusIndex index cell =
                             , height (px 90)
                             , margin zero
                             ]
+                      , outline zero -- remove, since we have custom focus
                       ]
                     ]
                  --|> List.reverse

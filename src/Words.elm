@@ -3,6 +3,9 @@ module Words exposing (words)
 import Set exposing (Set)
 
 
+{- From http://scrabble.merriam.com/3-letter-words -}
+
+
 words : Set String
 words =
     """aah
