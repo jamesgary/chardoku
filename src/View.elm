@@ -98,6 +98,16 @@ view model =
 Can you spell six 3-letter words (three words horizontally, three words vertically) without repeating any letter?
                 """
                 ]
+            , p
+                [ css
+                    [ fontSize (px 18)
+                    , color (hex "352a71")
+                    , textShadow3 (px 1) (px 1) (rgba 80 35 255 0.1)
+                    ]
+                ]
+                [ text
+                    "Fun fact: There are 85,068 solutions."
+                ]
             ]
         , Html.div
             -- game table
