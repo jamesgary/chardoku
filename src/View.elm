@@ -19,14 +19,14 @@ view : Model -> Html Msg
 view model =
     div
         [ css
-            [ padding (px 20)
+            [ padding (pct 2)
             , displayFlex
             , justifyContent center
             , fontWeight (int 400)
             ]
         ]
         [ global
-            [ selector "html, body"
+            [ selector "html"
                 [ fontFamilies [ "Vollkorn", "serif" ]
                 , backgroundImage
                     (linearGradient2 (deg 180)
@@ -34,7 +34,12 @@ view model =
                         (stop2 (hex "ffd1ff") <| pct 100)
                         []
                     )
-                , width (pct 100)
+                , backgroundRepeat noRepeat
+                , backgroundSize cover
+                , backgroundAttachment fixed
+                ]
+            , selector "html, body, #main"
+                [ width (pct 100)
                 , height (pct 100)
                 , margin zero
                 , padding zero
@@ -45,16 +50,15 @@ view model =
             [ css
                 [ color (hex "170d4c")
                 , textAlign center
-                , paddingTop (px 40)
-                , margin2 (px 10) (px 30)
+                , margin2 (pct 1) (pct 3)
                 , widthThird
                 ]
             ]
             [ -- "Chardoku"
               h1
                 [ css
-                    [ fontSize (px 64)
-                    , textShadow3 (px 1) (px 2) (rgba 80 35 255 0.5)
+                    [ fontSize (vw 5)
+                    , textShadow3 (vw 0.1) (vw 0.2) (rgba 80 35 255 0.5)
                     , lineHeight zero
                     , fontWeight (int 600)
                     ]
@@ -66,20 +70,20 @@ view model =
                 [ href "https://github.com/jamesgary/chardoku"
                 , Attributes.target "_blank"
                 , css
-                    [ fontSize (px 18)
-                    , textShadow3 (px 1) (px 1) (rgba 80 35 255 0.2)
+                    [ fontSize (vw 2)
+                    , textShadow3 (vw 0.1) (vw 0.2) (rgba 80 35 255 0.2)
                     , fontFamily monospace
                     , textDecoration none
                     , color (hex "170d4c")
                     , lineHeight (pct 100)
                     , display inlineBlock
-                    , borderBottom3 (px 1) solid (hex "170d4c")
-                    , boxShadow4 zero (px 1) zero (rgba 193 136 185 0.7)
+                    , borderBottom3 (vw 0.1) solid (hex "170d4c")
+                    , boxShadow4 zero (vw 0.1) zero (rgba 193 136 185 0.7)
                     , hover
                         [ -- textDecoration underline -- regular underline too thicc
                           color (hex "a63ce4")
-                        , borderBottom3 (px 1) solid (rgba 166 60 228 0.7)
-                        , boxShadow4 zero (px 1) zero (rgba 193 136 185 0.7)
+                        , borderBottom3 (vw 0.1) solid (rgba 166 60 228 0.7)
+                        , boxShadow4 zero (vw 0.1) zero (rgba 193 136 185 0.7)
                         ]
                     ]
                 ]
@@ -88,9 +92,9 @@ view model =
             -- "Can you spell..."
             , p
                 [ css
-                    [ fontSize (px 28)
+                    [ fontSize (vw 2)
                     , color (hex "352a71")
-                    , textShadow3 (px 1) (px 1) (rgba 80 35 255 0.1)
+                    , textShadow3 (vw 0.1) (vw 0.1) (rgba 80 35 255 0.1)
                     ]
                 ]
                 [ text
@@ -100,9 +104,9 @@ Can you spell six 3-letter words (three words horizontally, three words vertical
                 ]
             , p
                 [ css
-                    [ fontSize (px 18)
+                    [ fontSize (vw 1.5)
                     , color (hex "352a71")
-                    , textShadow3 (px 1) (px 1) (rgba 80 35 255 0.1)
+                    , textShadow3 (vw 0.1) (vw 0.1) (rgba 80 35 255 0.1)
                     ]
                 ]
                 [ text "Fun fact: There are 85,068 solutions using the "
@@ -115,7 +119,7 @@ Can you spell six 3-letter words (three words horizontally, three words vertical
         , Html.div
             -- game table
             [ css
-                [ margin2 (px 40) zero
+                [ marginTop (vw 2)
                 , widthThird
                 ]
             ]
@@ -132,7 +136,7 @@ Can you spell six 3-letter words (three words horizontally, three words vertical
             -- reasons
             [ css
                 [ widthThird
-                , marginTop (px 40)
+                , marginTop (vw 2)
                 ]
             ]
             [ viewStatus model.status ]
@@ -145,15 +149,15 @@ viewStatus status =
         Valid ->
             div
                 [ css
-                    [ fontSize (px 42)
+                    [ fontSize (vw 5)
                     , backgroundColor (hex "00b500")
-                    , padding (px 20)
+                    , padding3 (vw 1) (vw 3) (vw 0.5)
                     , display inlineBlock
                     , color (hex "#fff")
-                    , borderRadius (px 14)
-                    , letterSpacing (px 1)
-                    , textShadow4 (px 2) (px 2) zero (rgba 0 0 0 0.5)
-                    , border3 (px 2) solid (rgba 0 0 0 0.5)
+                    , borderRadius (vw 1)
+                    , letterSpacing (vw 0.05)
+                    , textShadow4 (vw 0.2) (vw 0.2) zero (rgba 0 0 0 0.5)
+                    , border3 (vw 0.4) solid (rgba 0 0 0 0.5)
                     ]
                 , class "tada"
                 ]
@@ -176,14 +180,13 @@ viewReason reason =
         [ css
             [ backgroundColor (rgba 183 50 42 0.9)
             , color (hex "fff")
-            , textShadow4 zero zero (px 4) (rgba 0 0 0 0.87)
-            , padding3 (px 8) (px 15) (px 3)
-            , fontSize (px 24)
-            , border3 (px 2) solid (rgb 103 0 2)
-            , borderRadius (px 7)
-            , margin2 (px 11) zero
-            , marginRight (px 31)
-            , letterSpacing (px 1)
+            , textShadow4 zero zero (vw 0.2) (rgba 0 0 0 0.87)
+            , padding3 (vw 1) (vw 2) (vw 0.5)
+            , fontSize (vw 2)
+            , border3 (vw 0.3) solid (rgb 103 0 2)
+            , borderRadius (vw 1)
+            , margin2 (vw 1) zero
+            , letterSpacing (vw 0.1)
             ]
         ]
         [ text reason ]
@@ -234,12 +237,11 @@ viewCell focusIndex index cell =
                 )
             , css
                 (List.concat
-                    [ [ fontSize (px 64)
+                    [ [ fontSize (vw 5)
                       , textAlign center
                       , verticalAlign middle
                       , textTransform uppercase
-                      , borderRadius (px 20)
-                      , margin (px 4)
+                      , borderRadius (vw 1)
                       , fontWeight (int 600)
                       , boxSizing borderBox
                       , backgroundImage
@@ -248,17 +250,20 @@ viewCell focusIndex index cell =
                                 (stop2 (hex "fce5ff") <| pct 100)
                                 []
                             )
-                      , border3 (px 3) solid (rgba 35 24 58 0.99)
-                      , width (px 85)
-                      , height (px 88)
-                      , margin (px 1)
+                      , border3 (vw 0.4) solid (rgba 35 24 58 0.99)
+                      , width (vw 8)
+                      , height (vw 8)
+                      , margin (vw 0.2)
 
                       -- focus
                       , focus
-                            [ border3 (px 5) solid (rgba 71 102 193 0.99)
-                            , width (px 87)
-                            , height (px 90)
-                            , margin zero
+                            [ border3 (vw 0.4) solid (rgba 71 102 193 0.99)
+                            , backgroundImage
+                                (linearGradient2 (deg 180)
+                                    (stop2 (hex "fefbe0") <| pct 20)
+                                    (stop2 (hex "fce5e0") <| pct 100)
+                                    []
+                                )
                             ]
                       , outline zero -- remove, since we have custom focus
                       ]
