@@ -112,7 +112,7 @@ checkWord index dir words cells =
     in
     case maybeWord of
         Just word ->
-            if Set.member word words then
+            if Set.member (String.toLower word) words then
                 Nothing
             else
                 Just (String.toUpper word ++ " is not a word!")
