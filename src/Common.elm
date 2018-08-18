@@ -27,7 +27,8 @@ type Status
 type Msg
     = FocusCell Int
     | ClickCell Int
-    | InputCell Int Int
+    | KeyDownCell Int Int
+    | InputCell Int String
 
 
 getCellAt : Int -> Int -> Cells -> Cell

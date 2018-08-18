@@ -207,7 +207,7 @@ viewCell focusIndex index cell =
                     String.fromChar char
 
                 Nothing ->
-                    "    "
+                    ""
 
         isSelected =
             focusIndex == Just index
@@ -221,8 +221,10 @@ viewCell focusIndex index cell =
             , type_ "text"
             , onClick (ClickCell index)
             , onFocus (FocusCell index)
-            , on "keydown"
-                (Json.map (InputCell index) keyCode)
+            , onWithOptions "keydown"
+                { stopPropagation = False, preventDefault = False }
+                (Json.map (KeyDownCell index) keyCode)
+            , onInput (InputCell index)
             , id (toString index)
             , class
                 (if isSelected then

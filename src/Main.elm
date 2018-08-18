@@ -186,13 +186,29 @@ update msg model =
             { model | focusIndex = Just index }
                 ! [ select (index |> toString) ]
 
-        InputCell index keycode ->
+        KeyDownCell index keycode ->
             case keycodeToAction keycode index of
                 MoveToIndex index ->
                     { model | focusIndex = Just index }
                         ! [ select (index |> toString) ]
 
-                NewChar char ->
+                NoOp ->
+                    model ! []
+
+        InputCell index inputStr ->
+            case String.uncons inputStr of
+                Just ( ' ', _ ) ->
+                    let
+                        cells =
+                            clearCellAt index model.cells
+                    in
+                    { model
+                        | cells = cells
+                        , status = validate cells
+                    }
+                        ! [ select (nextIndex index |> toString) ]
+
+                Just ( char, _ ) ->
                     let
                         cells =
                             setCellAt index char model.cells
@@ -204,7 +220,7 @@ update msg model =
                     }
                         ! [ select (nextIndex index |> toString) ]
 
-                Delete ->
+                Nothing ->
                     let
                         cells =
                             clearCellAt index model.cells
@@ -215,26 +231,9 @@ update msg model =
                     }
                         ! [ select (index |> toString) ]
 
-                DeleteAndMoveOn ->
-                    let
-                        cells =
-                            clearCellAt index model.cells
-                    in
-                    { model
-                        | cells = cells
-                        , status = validate cells
-                    }
-                        ! [ select (nextIndex index |> toString) ]
-
-                NoOp ->
-                    model ! []
-
 
 type KeycodeAction
     = MoveToIndex Int --arrow keys (directional) and invalid letters (current)
-    | NewChar Char -- valid letter
-    | Delete -- delete/backspace
-    | DeleteAndMoveOn -- spacebar
     | NoOp -- tab
 
 
@@ -273,30 +272,12 @@ keycodeToAction keycode index =
             else
                 MoveToIndex <| index + 1
 
-        8 ->
-            -- backspace
-            Delete
-
-        46 ->
-            -- delete
-            Delete
-
-        32 ->
-            -- spacebar
-            DeleteAndMoveOn
-
         9 ->
             -- tab
             NoOp
 
-        nonarrow ->
-            if nonarrow >= 65 && nonarrow <= 90 then
-                nonarrow
-                    |> Char.fromCode
-                    |> Char.toLower
-                    |> NewChar
-            else
-                MoveToIndex index
+        _ ->
+            NoOp
 
 
 setCellAt : Int -> Char -> Cells -> Cells
