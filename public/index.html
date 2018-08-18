@@ -73,34 +73,40 @@
     <script src="./js/main.js" charset="utf-8"></script>
     <div id="main"></div>
 
-    <input id="dummy" type="text"></input>  <!-- used to capture input -->
-    <input id="dummy2" type="text"></input> <!-- used to swap focus to clear virtual keyboard -->
+    <div style="opacity: 0.3; position: absolute; top: 0; left: 0;">
+      <input id="dummy" type="text" tabindex="-1"></input>  <!-- used to capture input -->
+      <input id="dummy2" type="text" tabindex="-1" maxlength="0"></input> <!-- used to swap focus to clear virtual keyboard -->
+    </div>
 
     <script>
       let node = document.getElementById('main');
       let app = Elm.Main.embed(node);
 
-      app.ports.focusDummyField.subscribe(function(id) {
-        //setTimeout(function() {
-        document.getElementById(id).select();
-        //}, 1);
-      });
-
       let dummyField  = document.getElementById("dummy");
       let dummyField2 = document.getElementById("dummy2");
 
-      dummyField.addEventListener("input", function(event) {
-        console.log(event);
-        let val = dummyField.value;
+      // focus on dummy field when a cell is clicked
+      app.ports.focusDummyField.subscribe(function() {
+        dummyField.focus();
+      });
 
-        // clear input and virtual keyboard
-        dummyField.value = " ";
-        dummyField2.select();
-        dummyField.select();
+      // send input to elm
+      dummyField.addEventListener("keydown", function(event) {
+        if (!event.ctrlKey && !event.altKey && !event.metaKey) {
+          let keyCode = event.keyCode;
+          let shiftKey = event.shiftKey;
 
-        // send val to elm
-        app.ports.receiveInput.send(val);
-      })
+          console.log(keyCode, shiftKey);
+
+          // clear input and virtual keyboard
+          dummyField.value = "";
+          dummyField2.select();
+          dummyField.select();
+
+          app.ports.receiveKeyCode.send([keyCode, shiftKey]);
+          event.preventDefault();
+        }
+      });
     </script>
   </body>
 </html>

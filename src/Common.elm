@@ -25,7 +25,7 @@ type Status
 
 
 type Msg
-    = ReceiveInput String
+    = ReceiveKeyCode ( Int, Bool )
     | ClickCell Int
     | Defocus
 

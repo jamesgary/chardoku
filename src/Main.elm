@@ -14,7 +14,7 @@ import Words exposing (words)
 port focusDummyField : String -> Cmd msg
 
 
-port receiveInput : (String -> msg) -> Sub msg
+port receiveKeyCode : (( Int, Bool ) -> msg) -> Sub msg
 
 
 main =
@@ -179,6 +179,14 @@ nextIndex index =
         index + 1
 
 
+prevIndex : Int -> Int
+prevIndex index =
+    if index - 1 < 0 then
+        8
+    else
+        index - 1
+
+
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
@@ -186,13 +194,13 @@ update msg model =
             { model | focusIndex = Just index }
                 ! [ focusDummyField (index |> toString) ]
 
-        ReceiveInput str ->
+        ReceiveKeyCode ( keyCode, shiftKey ) ->
             case model.focusIndex of
                 Nothing ->
                     model ! []
 
                 Just index ->
-                    case strToAction str index of
+                    case keyCodeToAction keyCode shiftKey index of
                         MoveToIndex index ->
                             { model | focusIndex = Just index }
                                 ! []
@@ -203,7 +211,7 @@ update msg model =
                                     setCellAt index char model.cells
                             in
                             { model
-                                | focusIndex = Just (nextIndex index)
+                                | focusIndex = Just <| nextIndex index
                                 , cells = cells
                                 , status = validate cells
                             }
@@ -226,13 +234,11 @@ update msg model =
                                     clearCellAt index model.cells
                             in
                             { model
-                                | cells = cells
+                                | focusIndex = Just <| nextIndex index
+                                , cells = cells
                                 , status = validate cells
                             }
                                 ! []
-
-                        NoOp ->
-                            model ! []
 
         Defocus ->
             { model | focusIndex = Nothing } ! []
@@ -243,19 +249,11 @@ type KeycodeAction
     | NewChar Char -- valid letter
     | Delete -- delete/backspace
     | DeleteAndMoveOn -- spacebar
-    | NoOp -- tab
 
 
-strToAction : String -> Int -> KeycodeAction
-strToAction str index =
-    let
-        _ =
-            Debug.log "str" str
-
-        keycode =
-            38
-    in
-    case keycode of
+keyCodeToAction : Int -> Bool -> Int -> KeycodeAction
+keyCodeToAction keyCode shiftKey index =
+    case keyCode of
         8 ->
             -- backspace
             Delete
@@ -270,7 +268,38 @@ strToAction str index =
 
         9 ->
             -- tab
-            NoOp
+            if shiftKey then
+                MoveToIndex <| prevIndex index
+            else
+                MoveToIndex <| nextIndex index
+
+        38 ->
+            -- up
+            if (index - 3) < 0 then
+                MoveToIndex index
+            else
+                MoveToIndex <| index - 3
+
+        40 ->
+            -- down
+            if (index + 3) > 8 then
+                MoveToIndex index
+            else
+                MoveToIndex <| index + 3
+
+        37 ->
+            -- left
+            if List.member index [ 0, 3, 6 ] then
+                MoveToIndex index
+            else
+                MoveToIndex <| index - 1
+
+        39 ->
+            -- right
+            if List.member index [ 2, 5, 8 ] then
+                MoveToIndex index
+            else
+                MoveToIndex <| index + 1
 
         nonarrow ->
             if nonarrow >= 65 && nonarrow <= 90 then
@@ -298,4 +327,4 @@ clearCellAt index cells =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    receiveInput ReceiveInput
+    receiveKeyCode ReceiveKeyCode
