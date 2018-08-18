@@ -91,22 +91,37 @@
       });
 
       // send input to elm
-      dummyField.addEventListener("keydown", function(event) {
-        if (!event.ctrlKey && !event.altKey && !event.metaKey) {
-          let keyCode = event.keyCode;
-          let shiftKey = event.shiftKey;
-
-          console.log(keyCode, shiftKey);
+      var ua = navigator.userAgent.toLowerCase();
+      var isAndroid = ua.indexOf("android") > -1;
+      if (isAndroid) {
+        dummyField.addEventListener("input", function(event) {
+          let keyCode = dummyField.value.toUpperCase().charCodeAt(0);
 
           // clear input and virtual keyboard
           dummyField.value = "";
           dummyField2.select();
           dummyField.select();
 
-          app.ports.receiveKeyCode.send([keyCode, shiftKey]);
-          event.preventDefault();
-        }
-      });
+          app.ports.receiveKeyCode.send([keyCode, false]);
+        });
+      } else {
+        dummyField.addEventListener("keydown", function(event) {
+          if (!event.ctrlKey && !event.altKey && !event.metaKey) {
+            let keyCode = event.keyCode;
+            let shiftKey = event.shiftKey;
+
+            console.log(keyCode, shiftKey);
+
+            // clear input and virtual keyboard
+            dummyField.value = "";
+            dummyField2.select();
+            dummyField.select();
+
+            app.ports.receiveKeyCode.send([keyCode, shiftKey]);
+            event.preventDefault();
+          }
+        });
+      }
     </script>
   </body>
 </html>
