@@ -11,7 +11,10 @@ import View exposing (view)
 import Words exposing (words)
 
 
-port select : String -> Cmd msg
+port focusDummyField : String -> Cmd msg
+
+
+port receiveInput : (String -> msg) -> Sub msg
 
 
 main =
@@ -33,7 +36,7 @@ init =
       , focusIndex = Just 0
       , status = validate cells
       }
-    , select "0"
+    , focusDummyField "0"
     )
 
 
@@ -179,55 +182,60 @@ nextIndex index =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        FocusCell index ->
-            { model | focusIndex = Just index } ! []
-
         ClickCell index ->
             { model | focusIndex = Just index }
-                ! [ select (index |> toString) ]
+                ! [ focusDummyField (index |> toString) ]
 
-        InputCell index keycode ->
-            case keycodeToAction keycode index of
-                MoveToIndex index ->
-                    { model | focusIndex = Just index }
-                        ! [ select (index |> toString) ]
-
-                NewChar char ->
-                    let
-                        cells =
-                            setCellAt index char model.cells
-                    in
-                    { model
-                        | focusIndex = Just (nextIndex index)
-                        , cells = cells
-                        , status = validate cells
-                    }
-                        ! [ select (nextIndex index |> toString) ]
-
-                Delete ->
-                    let
-                        cells =
-                            clearCellAt index model.cells
-                    in
-                    { model
-                        | cells = cells
-                        , status = validate cells
-                    }
-                        ! [ select (index |> toString) ]
-
-                DeleteAndMoveOn ->
-                    let
-                        cells =
-                            clearCellAt index model.cells
-                    in
-                    { model
-                        | cells = cells
-                        , status = validate cells
-                    }
-                        ! [ select (nextIndex index |> toString) ]
-
-                NoOp ->
+        ReceiveInput str ->
+            case model.focusIndex of
+                Nothing ->
                     model ! []
+
+                Just index ->
+                    case strToAction str index of
+                        MoveToIndex index ->
+                            { model | focusIndex = Just index }
+                                ! []
+
+                        NewChar char ->
+                            let
+                                cells =
+                                    setCellAt index char model.cells
+                            in
+                            { model
+                                | focusIndex = Just (nextIndex index)
+                                , cells = cells
+                                , status = validate cells
+                            }
+                                ! []
+
+                        Delete ->
+                            let
+                                cells =
+                                    clearCellAt index model.cells
+                            in
+                            { model
+                                | cells = cells
+                                , status = validate cells
+                            }
+                                ! []
+
+                        DeleteAndMoveOn ->
+                            let
+                                cells =
+                                    clearCellAt index model.cells
+                            in
+                            { model
+                                | cells = cells
+                                , status = validate cells
+                            }
+                                ! []
+
+                        NoOp ->
+                            model ! []
+
+        Defocus ->
+            { model | focusIndex = Nothing } ! []
 
 
 type KeycodeAction
@@ -238,41 +246,16 @@ type KeycodeAction
     | NoOp -- tab
 
 
-keycodeToAction : Int -> Int -> KeycodeAction
-keycodeToAction keycode index =
+strToAction : String -> Int -> KeycodeAction
+strToAction str index =
     let
         _ =
-            Debug.log "kc" keycode
+            Debug.log "str" str
+
+        keycode =
+            38
     in
     case keycode of
-        38 ->
-            -- up
-            if (index - 3) < 0 then
-                MoveToIndex <| index
-            else
-                MoveToIndex <| index - 3
-
-        40 ->
-            -- down
-            if (index + 3) > 8 then
-                MoveToIndex <| index
-            else
-                MoveToIndex <| index + 3
-
-        37 ->
-            -- left
-            if List.member index [ 0, 3, 6 ] then
-                MoveToIndex <| index
-            else
-                MoveToIndex <| index - 1
-
-        39 ->
-            -- right
-            if List.member index [ 2, 5, 8 ] then
-                MoveToIndex <| index
-            else
-                MoveToIndex <| index + 1
-
         8 ->
             -- backspace
             Delete
@@ -315,4 +298,4 @@ clearCellAt index cells =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    Sub.none
+    receiveInput ReceiveInput

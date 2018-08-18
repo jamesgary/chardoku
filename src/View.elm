@@ -24,6 +24,7 @@ view model =
             , justifyContent center
             , fontWeight (int 400)
             ]
+        , onClick Defocus
         ]
         [ global
             [ selector "html, body"
@@ -213,23 +214,21 @@ viewCell focusIndex index cell =
             focusIndex == Just index
     in
     td
-        [--css [ border3 (px 1) solid Css.Colors.gray ]
-        ]
+        --[ onClick (ClickCell index) ]
+        [ onWithOptions "click" { stopPropagation = True, preventDefault = False } (Json.succeed (ClickCell index)) ]
         [ input
             [ value val
             , maxlength 1
             , type_ "text"
-            , onClick (ClickCell index)
-            , onFocus (FocusCell index)
-            , on "keydown"
-                (Json.map (InputCell index) keyCode)
             , id (toString index)
-            , class
-                (if isSelected then
-                    "selected"
-                 else
-                    ""
-                )
+            , readonly True -- don't input this, input the dummy field!
+
+            --, class
+            --    (if isSelected then
+            --        "selected"
+            --     else
+            --        ""
+            --    )
             , css
                 (List.concat
                     [ [ fontSize (px 64)
@@ -252,16 +251,17 @@ viewCell focusIndex index cell =
                       , margin (px 1)
 
                       -- focus
-                      , focus
-                            [ border3 (px 5) solid (rgba 71 102 193 0.99)
-                            , width (px 87)
-                            , height (px 90)
-                            , margin zero
-                            ]
                       , outline zero -- remove, since we have custom focus
                       ]
+                    , if isSelected then
+                        [ border3 (px 5) solid (rgba 71 102 193 0.99)
+                        , width (px 87)
+                        , height (px 90)
+                        , margin zero
+                        ]
+                      else
+                        []
                     ]
-                 --|> List.reverse
                 )
             ]
             []

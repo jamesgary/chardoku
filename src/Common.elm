@@ -25,9 +25,9 @@ type Status
 
 
 type Msg
-    = FocusCell Int
+    = ReceiveInput String
     | ClickCell Int
-    | InputCell Int Int
+    | Defocus
 
 
 getCellAt : Int -> Int -> Cells -> Cell

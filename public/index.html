@@ -72,15 +72,35 @@
   <body>
     <script src="./js/main.js" charset="utf-8"></script>
     <div id="main"></div>
+
+    <input id="dummy" type="text"></input>  <!-- used to capture input -->
+    <input id="dummy2" type="text"></input> <!-- used to swap focus to clear virtual keyboard -->
+
     <script>
       let node = document.getElementById('main');
       let app = Elm.Main.embed(node);
-      app.ports.select.subscribe(function(id) {
-        setTimeout(function() {
-          console.log("Selecting", id)
-          document.getElementById(id).select();
-        }, 1);
+
+      app.ports.focusDummyField.subscribe(function(id) {
+        //setTimeout(function() {
+        document.getElementById(id).select();
+        //}, 1);
       });
+
+      let dummyField  = document.getElementById("dummy");
+      let dummyField2 = document.getElementById("dummy2");
+
+      dummyField.addEventListener("input", function(event) {
+        console.log(event);
+        let val = dummyField.value;
+
+        // clear input and virtual keyboard
+        dummyField.value = " ";
+        dummyField2.select();
+        dummyField.select();
+
+        // send val to elm
+        app.ports.receiveInput.send(val);
+      })
     </script>
   </body>
 </html>
