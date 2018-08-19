@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Chardoku</title>
+    <link href="https://fonts.googleapis.com/css?family=Vollkorn:400,600" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, height=device-height,  initial-scale=1.0, user-scalable=no;user-scalable=0;"/> <!-- fix for mobile auto zoom upon input -->
+    <style>
+      /* https://github.com/daneden/animate.css */
+      .tada {
+        -webkit-animation-name: "tada";
+                animation-name: "tada";
+        -webkit-animation-duration: 1s;
+                animation-duration: 1s;
+        -webkit-animation-fill-mode: both;
+                animation-fill-mode: both;
+      }
+
+      @-webkit-keyframes tada {
+        from {
+          -webkit-transform: scale3d(1, 1, 1);
+          transform: scale3d(1, 1, 1);
+        }
+
+        10%, 20% {
+          -webkit-transform: scale3d(.9, .9, .9) rotate3d(0, 0, 1, -3deg);
+          transform: scale3d(.9, .9, .9) rotate3d(0, 0, 1, -3deg);
+        }
+
+        30%, 50%, 70%, 90% {
+          -webkit-transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, 3deg);
+          transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, 3deg);
+        }
+
+        40%, 60%, 80% {
+          -webkit-transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, -3deg);
+          transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, -3deg);
+        }
+
+        to {
+          -webkit-transform: scale3d(1, 1, 1);
+          transform: scale3d(1, 1, 1);
+        }
+      }
+
+      @keyframes tada {
+        from {
+          -webkit-transform: scale3d(1, 1, 1);
+          transform: scale3d(1, 1, 1);
+        }
+
+        10%, 20% {
+          -webkit-transform: scale3d(.9, .9, .9) rotate3d(0, 0, 1, -3deg);
+          transform: scale3d(.9, .9, .9) rotate3d(0, 0, 1, -3deg);
+        }
+
+        30%, 50%, 70%, 90% {
+          -webkit-transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, 3deg);
+          transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, 3deg);
+        }
+
+        40%, 60%, 80% {
+          -webkit-transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, -3deg);
+          transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, -3deg);
+        }
+
+        to {
+          -webkit-transform: scale3d(1, 1, 1);
+          transform: scale3d(1, 1, 1);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <script src="./js/main.js" charset="utf-8"></script>
+    <div id="main"></div>
+    <script>
+      let node = document.getElementById('main');
+      let app = Elm.Main.embed(node);
+      app.ports.select.subscribe(function(id) {
+        //setTimeout(function() {
+        //  console.log("Selecting", id)
+          let input = document.getElementById(id);
+          input.select();
+          input.setSelectionRange(0, 999); // mobile safari fix
+        //}, 1);
+      });
+    </script>
+  </body>
+</html>
